@@ -1,0 +1,266 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style/style.css" />
+    <title>Calculator</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div>
+          <figure></figure>
+          <figure></figure>
+          <figure></figure>
+        </div>
+      </nav>
+      <nav class="nav">
+        <div>
+          <figure class="icon" data-target="historyMenu">
+            <i class="bx bx-history"></i>
+          </figure>
+          <figure class="icon" data-target="moneyMenu">
+            <i class="bx bx-money"></i>
+          </figure>
+          <figure class="icon" data-target="settingMenu">
+            <i class="bx bx-cog"></i>
+          </figure>
+          <figure class="icon" data-target="aboutMenu">
+            <i class="bx bx-info-circle"></i>
+          </figure>
+        </div>
+      </nav>
+      <main class="main-menu">
+        <section id="historyMenu" class="menu history hidden" id="history">
+          <div>
+            <h3>History</h3>
+            <ul id="history"></ul>
+          </div>
+        </section>
+        <section id="moneyMenu" class="menu money hidden" id="money">
+          <div>
+            <h3>Konversi Mata Uang</h3>
+            <main class="wrapper-conversi">
+              <figure class="conversi">
+                <select id="currency-from">
+                  <option value="">--Pilih--</option>
+                  <option value="IDR">IDR (Rupiah)</option>
+                  <option value="USD">USD (Dollar)</option>
+                  <option value="EUR">EUR (Euro)</option>
+                </select>
+              </figure>
+              <figure class="reverse">
+                <button id="reverse-currency">
+                  <i class="bx bx-transfer-alt"></i>
+                </button>
+              </figure>
+              <figure class="conversi">
+                <select id="currency-to">
+                  <option value="">--Pilih--</option>
+                  <option value="USD">USD (Dollar)</option>
+                  <option value="IDR">IDR (Rupiah)</option>
+                  <option value="EUR">EUR (Euro)</option>
+                </select>
+              </figure>
+            </main>
+            <div>
+              <h4>Hasil: <span id="moneyResult">0</span></h4>
+            </div>
+          </div>
+        </section>
+        <section id="settingMenu" class="menu setting hidden" id="setting">
+          <div>
+            <h3>Setting</h3>
+            <main>
+              <section class="set-menu theme">
+                <div>
+                  <div>
+                    <h4>tema warna</h4>
+                  </div>
+                  <!-- tempat pilihan tema -->
+                  <div class="wrapper-theme"></div>
+                  <!-- preview tema aktif -->
+                  <div class="preview-txt">
+                    <h4>tema saat ini</h4>
+                  </div>
+                  <div class="theme-preview"></div>
+                </div>
+              </section>
+              <section class="set-menu font-size">
+                <div>
+                  <div>
+                    <h4>font size</h4>
+                    <h6>default : 16px</h6>
+                  </div>
+                  <div class="wrapper-font"></div>
+                </div>
+              </section>
+              <section class="set-menu wallpaper">
+                <div>
+                  <div>
+                    <h4>pasang walpaper</h4>
+                  </div>
+                  <div class="upload-wrapper">
+                    <div>
+                      <main class="btn-reset">
+                        <button class="reset" id="resetWallpaper">
+                          <i class="bx bx-reset"></i>
+                        </button>
+                      </main>
+                      <main class="preview-img">
+                        <!-- preview wallpaper akan muncul di sini -->
+                      </main>
+                      <main class="upload">
+                        <input
+                          type="file"
+                          id="wallpaperInput"
+                          accept="image/*"
+                        />
+                      </main>
+                      <main class="cover-upload">
+                        <div>
+                          <i class="bx bx-upload"></i>
+                          <h4>upload</h4>
+                        </div>
+                      </main>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </section>
+        <section id="aboutMenu" class="menu about hidden" id="about">
+          <div>
+            <figure class="container-about">
+              <h3>About</h3>
+              <article class="about-content">
+                <p>
+                  Kalkulator ini masih dalam tahap
+                  <strong>pengembangan</strong>. Beberapa fitur mungkin belum
+                  sempurna dan bisa saja terjadi error. Kami terus melakukan
+                  <strong>peningkatan</strong> agar kalkulator ini bisa lebih
+                  pintar, cepat, dan mendukung lebih banyak fungsi.
+                </p>
+                <h5>✨ Fitur yang sudah tersedia:</h5>
+                <ul>
+                  <li>Operasi dasar matematika (tambah, kurang, kali, bagi)</li>
+                  <li>Preview hasil sebelum dihitung</li>
+                  <li>
+                    Riwayat perhitungan (history) yang bisa dipanggil ulang
+                  </li>
+                  <li>Dukungan angka negatif dengan otomatisasi kurung</li>
+                  <li>
+                    Mode konversi mata uang (IDR, USD, EUR) lengkap dengan
+                    tombol
+                    <em>reverse</em>
+                  </li>
+                  <li>Tampilan interaktif dengan navigasi menu</li>
+                </ul>
+                <p>
+                  Nantikan <strong>update versi terbaru</strong> dengan
+                  fitur-fitur tambahan, termasuk konversi mata uang yang lebih
+                  luas, histori perhitungan yang rapi, serta tampilan yang lebih
+                  interaktif.
+                </p>
+                <p>
+                  💡 Saran & masukan dari kalian sangat membantu meningkatkan
+                  kualitas kalkulator ini lebih baik! Jadi, tetap pantau ya 👀
+                </p>
+              </article>
+            </figure>
+          </div>
+        </section>
+      </main>
+      <header class="content main-output">
+        <div class="wrapper-output">
+          <h2 id="operation">0</h2>
+          <h6 id="result">0</h6>
+        </div>
+        <figure class="cover-output"></figure>
+      </header>
+      <div class="slide"><i>>></i></div>
+      <main class="content main-button">
+        <div class="wrapper-button">
+          <figure class="button" data-action="clear">
+            <div>C</div>
+          </figure>
+          <figure class="button" data-action="delete">
+            <div><i class="bx bx-arrow-to-left"></i></div>
+          </figure>
+          <figure class="button" data-value=":">
+            <div class="pembagian">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </figure>
+          <figure class="button" data-value="7">
+            <div>7</div>
+          </figure>
+          <figure class="button" data-value="8">
+            <div>8</div>
+          </figure>
+          <figure class="button" data-value="9">
+            <div>9</div>
+          </figure>
+          <figure class="button" data-value="x">
+            <div class="perkalian">
+              <div></div>
+              <div></div>
+            </div>
+          </figure>
+          <figure class="button" data-value="4">
+            <div>4</div>
+          </figure>
+          <figure class="button" data-value="5">
+            <div>5</div>
+          </figure>
+          <figure class="button" data-value="6">
+            <div>6</div>
+          </figure>
+          <figure class="button" data-value="-">
+            <div class="pengurangan">
+              <div></div>
+            </div>
+          </figure>
+          <figure class="button" data-value="1">
+            <div>1</div>
+          </figure>
+          <figure class="button" data-value="2">
+            <div>2</div>
+          </figure>
+          <figure class="button" data-value="3">
+            <div>3</div>
+          </figure>
+          <figure class="button" data-value="+">
+            <div class="penjumlahan">
+              <div></div>
+              <div></div>
+            </div>
+          </figure>
+          <figure class="button" data-value=".">
+            <div>,</div>
+          </figure>
+          <figure class="button" data-value="0">
+            <div>0</div>
+          </figure>
+          <figure class="button" data-action="calculate">
+            <div class="hasil">
+              <div></div>
+              <div></div>
+            </div>
+          </figure>
+        </div>
+      </main>
+    </div>
+    <script src="/resources/slide-toggle.js"></script>
+    <script src="/resources/setting.js"></script>
+    <script src="/resources/setWLPR.js"></script>
+    <script src="/resources/math.js"></script>
+  </body>
+</html>
