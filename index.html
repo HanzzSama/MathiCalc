@@ -11,11 +11,42 @@
   </head>
   <body>
     <div class="container">
-      <nav>
+      <nav class="nav-alert" id="main-alert">
         <div>
-          <figure></figure>
-          <figure></figure>
-          <figure></figure>
+          <figure class="main-alert">
+            <div>
+              <i class="bx bx-x" id="close-alert"></i>
+              <article class="desc-alert">
+                <img src="/img/welcome.gif" alt="" />
+                <div>
+                  <h3>selamat datang di</h3>
+                  <h3>mathiCalc</h3>
+                </div>
+              </article>
+            </div>
+          </figure>
+          <figure class="main-alert">
+            <div>
+              <article>
+                <h4>
+                  Mohon maaf mathiCalc sedang dalam masa pengembangan, jadi
+                  nanti akan ada error yg sering muncul
+                </h4>
+              </article>
+            </div>
+          </figure>
+          <figure class="main-alert">
+            <div>
+              <article>
+                <h3>saran & kritik</h3>
+                <p>
+                  Saran & masukan kalian semua sangat membantu banget dalam
+                  pengembangan <strong>MathiCalc</strong> agar menjadi lebih
+                  baik, jadi jangan takut buat ngasih saran & kritiknya yaaa!!
+                </p>
+              </article>
+            </div>
+          </figure>
         </div>
       </nav>
       <nav class="nav">
@@ -28,6 +59,9 @@
           </figure>
           <figure class="icon" data-target="settingMenu">
             <i class="bx bx-cog"></i>
+          </figure>
+          <figure class="icon ui" id="newui">
+            <i class="bx bx-math"></i>
           </figure>
           <figure class="icon" data-target="aboutMenu">
             <i class="bx bx-info-circle"></i>
@@ -131,6 +165,19 @@
                   </div>
                 </div>
               </section>
+              <section class="set-menu new-ui">
+                <div>
+                  <div>
+                    <h4>tampilan baru nih</h4>
+                  </div>
+                  <div class="wrapper-newui">
+                    <h5 id="uitxt">Ubah ke UI baru</h5>
+                    <button id="toggleNewUI">
+                      <i class="bx bxs-mouse-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </section>
             </main>
           </div>
         </section>
@@ -176,15 +223,39 @@
           </div>
         </section>
       </main>
-      <header class="content main-output">
+      <main class="main-newui" id="newUISection">
+        <div>
+          <div class="page-newui">
+            <header class="head-tittle">
+              <div>
+                <h4>selamat datang di</h4>
+                <h3>mathiCalc <strong>Chat</strong></h3>
+              </div>
+            </header>
+            <main class="chat-box">
+              <div></div>
+            </main>
+            <section class="input-chat">
+              <div>
+                <div id="live-preview"></div>
+                <div class="input">
+                  <i class="bx bxs-keyboard"></i>
+                  <input type="text" placeholder="ketik pesan..." />
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+      <header class="content main-output" id="main-output">
         <div class="wrapper-output">
           <h2 id="operation">0</h2>
           <h6 id="result">0</h6>
         </div>
         <figure class="cover-output"></figure>
       </header>
-      <div class="slide"><i>>></i></div>
-      <main class="content main-button">
+      <div class="slide" id="slide"><i>>></i></div>
+      <main class="content main-button" id="main-button">
         <div class="wrapper-button">
           <figure class="button" data-action="clear">
             <div>C</div>
@@ -258,6 +329,9 @@
         </div>
       </main>
     </div>
+    <script src="/resources/mathFunctions.js"></script>
+    <script src="/resources/chatbot.js"></script>
+    <script src="/resources/newUI.js"></script>
     <script src="/resources/slide-toggle.js"></script>
     <script src="/resources/setting.js"></script>
     <script src="/resources/setWLPR.js"></script>

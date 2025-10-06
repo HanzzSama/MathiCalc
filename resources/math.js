@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let insideNegBracket = false;
   let isCurrencyMode = false;
 
+  // ==== Flag untuk deteksi chatbot ====
+  window.chatbotActive = false; // default: normal mode
+
   // ===== Helper =====
   function isOperator(ch) {
     return ["+", "-", "x", ":"].includes(ch);
@@ -39,27 +42,46 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
-      // Evaluasi selalu valid expression (kurung lengkap)
       let exp = operation.replace(/x/g, "*").replace(/:/g, "/");
       let preview = eval(exp);
       lastValidResult = preview;
-      resultEl.textContent = preview;
+      if (isCurrencyMode) {
+        resultEl.textContent = convertCurrency(preview);
+      } else {
+        resultEl.textContent = preview;
+      }
     } catch {
-      // jika belum valid, tampilkan last valid
       resultEl.textContent = lastValidResult;
     }
   }
 
+  // ===== History =====
   function renderHistory() {
     historyEl.innerHTML = "";
     if (!history.length) {
       historyEl.innerHTML = `<div class="alert"><p>Belum ada riwayat perhitungan</p></div>`;
       return;
     }
-    history.forEach((item) => {
+
+    // Tombol hapus semua
+    const clearAllBtn = document.createElement("button");
+    clearAllBtn.textContent = "Hapus Semua";
+    clearAllBtn.className = "delete-all";
+    clearAllBtn.addEventListener("click", () => {
+      history = [];
+      renderHistory();
+    });
+    historyEl.appendChild(clearAllBtn);
+
+    // List item history
+    const ul = document.createElement("ul");
+    history.forEach((item, index) => {
       const li = document.createElement("li");
-      li.textContent = `${item.operation} = ${item.result}`;
-      li.addEventListener("click", () => {
+
+      const text = document.createElement("span");
+      text.textContent = `${item.operation} = ${item.result}`;
+      text.style.cursor = "pointer";
+      text.addEventListener("click", () => {
         operation = item.operation;
         operationEl.textContent = operation;
         resultEl.textContent = item.result;
@@ -67,11 +89,23 @@ document.addEventListener("DOMContentLoaded", () => {
         operationEl.classList.add("hidden");
         isFinal = true;
       });
-      historyEl.appendChild(li);
+
+      const delBtn = document.createElement("button");
+      delBtn.innerHTML = "<i class='bx bx-x'></i>";
+      delBtn.className = "delete-one";
+      delBtn.addEventListener("click", () => {
+        history.splice(index, 1);
+        renderHistory();
+      });
+
+      li.appendChild(text);
+      li.appendChild(delBtn);
+      ul.appendChild(li);
     });
+    historyEl.appendChild(ul);
   }
 
-  // ===== HANDLE INPUT =====
+  // ===== Handle Input =====
   function handleInput({ value, action }) {
     const lastChar = operation.slice(-1);
 
@@ -128,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
         isFinal = false;
       }
 
-      // Tutup kurung otomatis jika masih ada bracket terbuka sebelum operator
       if (isOperator(value) && insideNegBracket) {
         operation += ")";
         insideNegBracket = false;
@@ -153,65 +186,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       operationEl.textContent = operation;
-      updatePreview(); // pastikan selalu dipanggil setelah setiap input
+      updatePreview();
     }
   }
 
-  // ===== BUTTON CLICK =====
+  // ===== Button Click =====
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
+      if (window.chatbotActive) return; // stop kalau chatbot aktif
       handleInput({ value: btn.dataset.value, action: btn.dataset.action });
       btn.classList.add("active");
       setTimeout(() => btn.classList.remove("active"), 150);
     });
   });
 
-  // ===== KEYBOARD SHORTCUT (KALKULATOR + MENU TERINTEGRASI) =====
+  // ===== Keyboard Shortcut =====
   document.addEventListener("keydown", (e) => {
-    // ===== INTEGRASI SHORTCUT MENU (Alt + H/M/S/A) =====
-    if (event.altKey) {
-      event.preventDefault(); // Prevent default browser behavior (e.g., Alt+F4)
+    // stop shortcut kalkulator kalau chatbot aktif
+    if (window.chatbotActive) return;
 
-      // Alt + H for History
-      if (event.key.toLowerCase() === "h") {
+    // ===== Integrasi Shortcut Menu (Alt + H/M/S/A) =====
+    if (e.altKey) {
+      e.preventDefault();
+      if (e.key.toLowerCase() === "h") {
         const historyMenu = document.getElementById("historyMenu");
-        if (historyMenu) {
-          historyMenu.classList.toggle("hidden");
-        }
-        return; // Stop further processing
-      }
-
-      // Alt + M for Money (konversi mata uang)
-      else if (event.key.toLowerCase() === "m") {
+        if (historyMenu) historyMenu.classList.toggle("hidden");
+        return;
+      } else if (e.key.toLowerCase() === "m") {
         const moneyMenu = document.getElementById("moneyMenu");
-        if (moneyMenu) {
-          moneyMenu.classList.toggle("hidden");
-        }
-        return; // Stop further processing
-      }
-
-      // Alt + S for Setting
-      else if (event.key.toLowerCase() === "s") {
+        if (moneyMenu) moneyMenu.classList.toggle("hidden");
+        return;
+      } else if (e.key.toLowerCase() === "s") {
         const settingMenu = document.getElementById("settingMenu");
-        if (settingMenu) {
-          settingMenu.classList.toggle("hidden");
-        }
-        return; // Stop further processing
-      }
-
-      // Alt + A for About
-      else if (event.key.toLowerCase() === "a") {
+        if (settingMenu) settingMenu.classList.toggle("hidden");
+        return;
+      } else if (e.key.toLowerCase() === "a") {
         const aboutMenu = document.getElementById("aboutMenu");
-        if (aboutMenu) {
-          aboutMenu.classList.toggle("hidden");
-        }
-        return; // Stop further processing
+        if (aboutMenu) aboutMenu.classList.toggle("hidden");
+        return;
       }
     }
 
-    // ===== LOGIKA SHORTCUT KALKULATOR (ASLI, TIDAK BERUBAH) =====
     if (/Mac|iPod|iPhone|iPad/.test(navigator.platform)) return;
-
     if (e.ctrlKey && ["-", "+", "=", "0"].includes(e.key)) return;
 
     const keyMap = {
@@ -245,7 +261,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       handleInput({ value, action });
 
-      // tombol efek
       const targetBtn = document.querySelector(
         value
           ? `.button[data-value="${value}"]`
@@ -260,8 +275,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ===== NAVIGATION MENU =====
+  // ===== Navigation Menu =====
   navIcons.forEach((icon) => {
+    if (icon.id === "newui") return;
+
     icon.addEventListener("click", () => {
       const targetMenuId = icon.getAttribute("data-target");
       const targetMenu = document.getElementById(targetMenuId);
@@ -285,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ===== KONVERSI MATA UANG =====
+  // ===== Konversi Mata Uang =====
   const rates = {
     IDR: { USD: 0.000065, EUR: 0.000061, IDR: 1 },
     USD: { IDR: 15400, EUR: 0.93, USD: 1 },
