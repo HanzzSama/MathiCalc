@@ -50,9 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     chatBox.appendChild(section);
 
-    // Auto scroll ke bawah
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // Scroll ke bawah dengan efek halus
+    section.scrollIntoView({ behavior: "smooth" });
   }
+
 
   // === Hapus Semua Chat ===
   function clearChat() {
