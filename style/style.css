@@ -247,6 +247,7 @@ body{
     font-size: 1.5em;
     text-transform: capitalize;
     line-height: 1.2em;
+    white-space: nonwrap;
     color: #ccc;
 }
 .head-tittle strong{
@@ -297,6 +298,25 @@ body{
 }
 .input-chat>div{
     display: flex;
+    flex-direction: column;
+}
+.live-preview{
+    width: 100%;
+    max-width: 40em;
+    display: flex;
+}
+.wrapper-live{
+    width: 100%;
+    display: flex;
+    border-radius: 8px;
+    background: #121212;
+}
+.wrapper-live>div{
+    width: 100%;
+    margin: 10px;
+    background: #000;
+    border-radius: 6px;
+    padding: 10px 25px;
 }
 .input{
     width: 100%;
