@@ -18,16 +18,18 @@ toggleUIBtn.addEventListener("click", () => {
 
   if (showNewUIIcon) {
     newUIIcon.style.opacity = "1";
-    newUIIcon.style.height = "3.2em";
+    newUIIcon.style.height = "100%";
     newUIIcon.style.borderRadius = "8px";
+    newUIIcon.classList.add("show");
     newUIIcon.style.transform = "scale(1)";
-    txtUI.textContent = "Sembunyikan tombol ChatBot";
+    txtUI.textContent = "Disable MathiCalc Chat";
   } else {
     newUIIcon.style.opacity = "0";
     newUIIcon.style.height = "0";
+    newUIIcon.classList.remove("show");
     newUIIcon.style.borderRadius = "20px";
     newUIIcon.style.transform = "scale(.8)";
-    txtUI.textContent = "Tampilkan tombol ChatBot";
+    txtUI.textContent = "Enable MathiCalc Chat";
 
     // kalau tombol disembunyikan, otomatis kembali ke mode normal
     chatbotActive = false;
@@ -64,7 +66,8 @@ newUIIcon.addEventListener("click", () => {
 window.addEventListener("DOMContentLoaded", () => {
   newUIIcon.style.opacity = "0";
   newUIIcon.style.height = "0";
-  txtUI.textContent = "Tampilkan tombol ChatBot";
+  newUIIcon.classList.remove("show");
+  txtUI.textContent = "Enable MathiCalc Chat";
 
   chatbotActive = false;
   window.chatbotActive = false;

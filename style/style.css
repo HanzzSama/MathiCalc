@@ -358,26 +358,42 @@ body{
 }
 .wrapper-output{
     position: relative;
-    z-index: 10;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+}
+.wrapper-output>div{
+    display: flex;
+    margin-top: 8px;
+    justify-content: end;
 }
 .cover-output{
     position: absolute;
-    width: 50%;
+    /* width: 50%; */
     z-index: 5;
     height: 100%;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(4.3px);
-    -webkit-backdrop-filter: blur(4.3px);
-    border: 1px solid rgba(255, 255, 255, 0.19);
-    border-radius: 10px;
-    background: #19191979;
+    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
+    /* backdrop-filter: blur(4.3px); */
+    /* -webkit-backdrop-filter: blur(4.3px); */
+    /* border: 1px solid rgba(255, 255, 255, 0.19); */
+    /* border-radius: 10px; */
+    /* background: #19191979; */
     /* opacity: 0.85; */
 }
-#result.final {
-  font-size: 2.5em;   /* jadi lebih besar saat final */
-  color: #ffffff;       /* lebih jelas */
+#operation{
+    padding: 0 15px;
+    border-radius: 10px;
+    background: #191919dc;
 }
-
+#result{
+    padding: 0 15px;
+    border-radius: 10px;
+    background: #121212;
+}
+#result.final {
+    font-size: 2.5em;   /* jadi lebih besar saat final */
+    color: #ffffff;       /* lebih jelas */
+}
 #operation.hidden {
     display: none;     /* hilang setelah ditekan = */
 }
@@ -387,6 +403,10 @@ body{
 .main-menu{
     display: flex;
     width: 0;
+}
+.main-menu>div{
+    width: 100%;
+    display: flex;
 }
 .main-menu.active{
     width: 100%;
@@ -496,6 +516,9 @@ body{
     border: none;
     cursor: pointer;
     background: transparent;
+}
+.setting>div{
+    border-radius: 10px;
 }
 .set-menu{
     display: flex;
@@ -697,6 +720,9 @@ input[type=file]::file-selector-button {
     color: #ccc;
     transform: scale(1.1);
 }
+.about>div{
+    border-radius: 10px;
+}
 .about-content{
     display: flex;
     gap: 10px;
@@ -776,7 +802,7 @@ input[type=file]::file-selector-button {
     /* background: #2c2c2c; */
 }
 .nav-alert{
-    z-index: 10;
+    z-index: 11;
     width: 100%;
     max-width: 35em;
     position: absolute;
@@ -875,21 +901,113 @@ input[type=file]::file-selector-button {
 @media screen and (max-width: 1300px) {
     .container{
         max-height: 100%;
+        position: relative;
+        gap: 0;
         flex-direction: column;
+    }
+    .nav{
+        z-index: 10;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+        /* background: red; */
+        position: absolute;
     }
     .nav>div{
         flex-direction: row;
         /* justify-content: center; */
     }
+    .slide{
+        height: 0;
+        overflow: hidden;
+    }
     .main-menu{
         z-index: 6;
-        margin-top: 3.8em;
+        /* margin-top: 3.8em; */
         position: absolute;
+    }
+    .main-menu>div{
+        margin-top: 4em;
     }
     .main-menu.active{
         max-height: 100%;
         width: 100%;
         max-width: 60%;
+    }
+    .main-newui{
+        height: 0;
+        overflow: hidden;
+    }
+    .head-tittle{
+        margin-top: 4em;
+    }
+    .main-newui.open{
+        height: 100%;
+    }
+    .main-output.active{
+        height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+    .main-button{
+        margin-top: 8px;
+    }
+    .main-button.active{
+        height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+}
+@media screen and (max-width: 650px) {
+    *::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+    .icon i{
+        font-size: 17px;
+    }
+    .icon.show{
+        height: 3em;
+    }
+    .main-menu{
+        z-index: 9;
+        height: 100%;
+    }
+    .main-menu.active{
+        max-width: 100%;
+    }
+    .main-menu.active>div{
+        width: 100%;
+    }
+    .theme-color main{
+        max-height: 35px;
+    }
+    .theme-color main div:nth-child(1){
+        max-height: 19px;
+    }
+    #uitxt{
+        font-size: 12px;
+    }
+    .chat.user{
+        margin-top: 10px;
+    }
+    .chat-text p{
+        font-size: 13px;
+    }
+}
+@media screen and (max-width: 630px) {
+    .desc-alert{
+        flex-wrap: wrap;
+    }
+    .desc-alert>div h3:nth-child(1){
+        letter-spacing: 6px;
+        font-size: 14px;
+    }
+    .desc-alert>div h3:nth-child(2){
+        font-size: 2.74em;
+        line-height: 1.2em;
+        color: #ccc;
     }
 }
 /* =================================== */
