@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
     section.scrollIntoView({ behavior: "smooth" });
   }
 
-
   // === Hapus Semua Chat ===
   function clearChat() {
     chatBox.innerHTML = "";
@@ -192,7 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const userMsg = inputField.value.trim();
       addMessage("user", userMsg);
       inputField.value = "";
-      livePreview.style.display = "none"; // sembunyikan preview setelah kirim
+      livePreview.style.display = "none";
+      livePreview.style.height = "0";
       setTimeout(() => botReply(userMsg), 500);
     }
   });
@@ -202,9 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const msg = inputField.value;
     const preview = liveCalc(msg);
     if (preview) {
-      livePreview.style.display = "block";
+      livePreview.style.display = "flex";
+      livePreview.style.height = "100%";
       livePreview.textContent = preview;
     } else {
+      livePreview.style.height = "0";
       livePreview.style.display = "none";
     }
   });

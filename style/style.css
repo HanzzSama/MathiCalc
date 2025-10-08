@@ -4,6 +4,7 @@
     padding: 0;
     text-decoration: none;
     color: #ffffff;
+    box-sizing: border-box;
     transition: all .3s;
     font-family: "Poppins", sans-serif;
 }
@@ -14,7 +15,7 @@
 
 *::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: var(--background-color);
+    background: var(--backgroun     d-color);
 }
 
 *::-webkit-scrollbar-track {
@@ -241,13 +242,14 @@ body{
 .head-tittle h4{
     color: #696969;
     font-size: 14px;
+    white-space: nowrap;
     text-transform: capitalize;
 }
 .head-tittle h3{
     font-size: 1.5em;
     text-transform: capitalize;
     line-height: 1.2em;
-    white-space: nonwrap;
+    white-space: nowrap;
     color: #ccc;
 }
 .head-tittle strong{
@@ -300,24 +302,6 @@ body{
     display: flex;
     flex-direction: column;
 }
-.live-preview{
-    width: 100%;
-    max-width: 40em;
-    display: flex;
-}
-.wrapper-live{
-    width: 100%;
-    display: flex;
-    border-radius: 8px;
-    background: #121212;
-}
-.wrapper-live>div{
-    width: 100%;
-    margin: 10px;
-    background: #000;
-    border-radius: 6px;
-    padding: 10px 25px;
-}
 .input{
     width: 100%;
     display: flex;
@@ -328,6 +312,19 @@ body{
     font-size: 22px;
     margin-left: 24px;
     position: absolute;
+}
+.live-preview{
+    height: 0;
+    display: flex;
+    overflow: hidden;
+}
+.wrapper-live{
+    display: flex;
+    border-radius: 8px;
+    background: #121212;
+}
+.wrapper-live>div{
+    margin: 10px 25px;
 }
 .input input{
     width: 100%;
@@ -766,6 +763,21 @@ input[type=file]::file-selector-button {
     margin-bottom: 6px;
     text-align: justify;
 }
+.history-progres{
+    margin-top: 3em;
+}
+.wrapper-progres{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.progres h4{
+    /* color: #ccc; */
+    font-size: 14px;
+}
+.progres p{
+    font-size: 13px;
+}
 /* =================================== */
 /* =============== Nav =============== */
 /* =================================== */
@@ -919,11 +931,16 @@ input[type=file]::file-selector-button {
     }
 }
 @media screen and (max-width: 1300px) {
+    body{
+        /* height: 100dvh; */
+        margin: 10px;
+    }
     .container{
+        gap: 0;
         max-height: 100%;
         position: relative;
-        gap: 0;
         flex-direction: column;
+        /* background: blue; */
     }
     .nav{
         z-index: 10;
@@ -972,11 +989,58 @@ input[type=file]::file-selector-button {
     }
     .main-button{
         margin-top: 8px;
+        /* background: red; */
+    }
+    .button>div{
+        font-size: 20px;
     }
     .main-button.active{
         height: 0;
         opacity: 0;
         overflow: hidden;
+    }
+    .button:nth-child(1) div{
+        font-size: 24px;
+    }
+    .pembagian{
+        width: 22px;
+    }
+    .pembagian div:nth-child(1),
+    .pembagian div:nth-child(3){
+        width: 5px;
+        height: 5px;
+    }
+    .pembagian div:nth-child(2){
+        height: 4px;
+    }
+    .perkalian{
+        width: 22px;
+    }
+    .perkalian div{
+        width: 22px;
+        height: 4;
+    }
+    .pengurangan div{
+        width: 22px;
+        height: 4px;
+    }
+    .penjumlahan{
+        width: 22px;
+    }
+    .penjumlahan div{
+        width: 22px;
+        height: 4;
+    }
+    .penjumlahan div:nth-child(2){
+        transform: rotate(-90deg);
+    }
+    .button:nth-child(18){
+        grid-column: span 2;
+        background: var(--secondary-color);
+    }
+    .hasil>div{
+        width: 25px;
+        height: 4px;
     }
 }
 @media screen and (max-width: 650px) {
@@ -1028,6 +1092,12 @@ input[type=file]::file-selector-button {
         font-size: 2.74em;
         line-height: 1.2em;
         color: #ccc;
+    }
+    .dev{
+        transform: translateY(15px);
+    }
+    .dev h6{
+        font-size: 11px;
     }
 }
 /* =================================== */
@@ -1084,4 +1154,17 @@ select:focus {
 select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
+}
+.dev{
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+}
+.dev>div{
+    margin: 0 10px;
+}
+.dev h6{
+    color: #696969;
 }
