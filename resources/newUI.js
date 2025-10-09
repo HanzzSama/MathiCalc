@@ -36,7 +36,7 @@ toggleUIBtn.addEventListener("click", () => {
     window.chatbotActive = false;
     newUISection.classList.remove("open");
     slide.style.overflowX = "auto";
-    slide.style.width = "";
+    slide.style.width = "100%";
     pageButton.classList.remove("active");
     pageOutput.classList.remove("active");
   }
@@ -56,7 +56,7 @@ newUIIcon.addEventListener("click", () => {
     pageOutput.classList.add("active");
   } else {
     slide.style.overflowX = "auto";
-    slide.style.width = "";
+    slide.style.width = "100%";
     pageButton.classList.remove("active");
     pageOutput.classList.remove("active");
   }
@@ -73,7 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
   window.chatbotActive = false;
   newUISection.classList.remove("open");
   slide.style.overflowX = "auto";
-  slide.style.width = "";
+  slide.style.width = "100%";
   pageButton.classList.remove("active");
   pageOutput.classList.remove("active");
 });

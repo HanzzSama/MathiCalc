@@ -7,6 +7,12 @@
     box-sizing: border-box;
     transition: all .3s;
     font-family: "Poppins", sans-serif;
+    -webkit-user-select: none; /* Chrome, Safari, iOS */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge legacy */
+    user-select: none;         /* standar */
+    -webkit-touch-callout: none; /* matikan menu tekan lama di iOS */
+    -webkit-tap-highlight-color: transparent;
 }
 *::-webkit-scrollbar {
     width: 5px;
@@ -65,6 +71,7 @@ body{
 /* ===================================== */
 .slide{
     display: flex;
+    max-width: 2em;
     align-items: center;
     border-radius: 6px;
     justify-content: center;
@@ -74,8 +81,9 @@ body{
     transform: rotate(180deg);
 }
 .slide i{
+    margin: 0 10px;
     color: #9c9c9c;
-    padding: 0 8px;
+    /* padding: 8px 8px; */
     cursor: pointer;
 }
 /* ====================================== */
@@ -392,7 +400,7 @@ body{
     width: 100%;
     border-radius: 10px;
     position: absolute;
-    /* background: #121212; */
+    background: #000;
 }
 .video-output video{
     width: 100%;
@@ -721,6 +729,28 @@ input[type=file]::file-selector-button {
     border-radius: 6px;
     background: #121212;
     justify-content: space-between;
+}
+.input-yt{
+    margin-top: 1em;
+}
+.yt-floating {
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    width: 320px !important;
+    height: 180px !important;
+    border-radius: 6px !important;
+    z-index: 999 !important;
+    pointer-events: auto !important;
+    box-shadow: 0 0 10px #0008 !important;
+}
+.input-yt input{
+    width: 100%;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background: #121212;
+    border: none;
 }
 .wrapper-newui h5{
     font-size: 14px;
