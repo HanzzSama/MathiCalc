@@ -108,8 +108,16 @@ function applyWallpaper(url, type) {
   videoOutput.load();
   videoFigure.style.background = "none";
   removeCover();
-  if (document.querySelector(".yt-wallpaper")) {
-    document.querySelector(".yt-wallpaper").remove();
+
+  // Hapus elemen YouTube jika ada
+  const oldYT = document.querySelector(".yt-wallpaper");
+  if (oldYT) oldYT.remove();
+
+  // Hapus tombol Setting Video jika ada
+  if (floatBtn) {
+    floatBtn.remove();
+    floatBtn = null;
+    isFloating = false;
   }
 
   if (!url) {
@@ -219,7 +227,7 @@ function showFloatButton() {
   if (floatBtn) floatBtn.remove();
 
   floatBtn = document.createElement("button");
-  floatBtn.textContent = "📺 Video Apung";
+  floatBtn.textContent = "📺 Setting Video";
   floatBtn.className = "float-video-btn";
   floatBtn.style.cssText = `
     position: fixed;
@@ -249,7 +257,7 @@ function toggleFloatingVideo() {
   } else {
     ytIframe.classList.remove("yt-floating"); // hapus class saat kembali
     isFloating = false;
-    floatBtn.textContent = "📺 Video Apung";
+    floatBtn.textContent = "📺 Setting Video";
   }
 }
 
