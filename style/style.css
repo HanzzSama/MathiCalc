@@ -385,11 +385,17 @@ body{
     position: relative;
     z-index: 6;
     display: flex;
+    /* word-break: break-all; */
+    /* overflow-wrap: anywhere; */
+    /* white-space: normal; */
     flex-direction: column;
 }
 .wrapper-output>div{
     display: flex;
     margin-top: 8px;
+    word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
     justify-content: end;
 }
 .video-output{
@@ -407,11 +413,17 @@ body{
     height: 100%;
 }
 #operation{
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    white-space: normal;
     padding: 0 15px;
     border-radius: 10px;
     background: #191919dc;
 }
 #result{
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    white-space: normal;
     padding: 0 15px;
     border-radius: 10px;
     background: #121212;
