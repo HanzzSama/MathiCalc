@@ -2,12 +2,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="img/mathicalc.ico" type="image/x-icon" />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style/style.css" />
-    <title>Calculator</title>
+    <title>MathiCalc</title>
   </head>
   <body>
     <div class="container">
@@ -136,29 +137,33 @@
                     <div>
                       <h4>pasang walpaper</h4>
                     </div>
-                    <div class="upload-wrapper">
+                    <div class="main-input-wlpr">
                       <div>
-                        <main class="btn-reset">
-                          <button class="reset" id="resetWallpaper">
-                            <i class="bx bx-reset"></i>
-                          </button>
-                        </main>
-                        <main class="preview-img">
-                          <!-- preview wallpaper akan muncul di sini -->
-                        </main>
-                        <main class="upload">
-                          <input
-                            type="file"
-                            id="wallpaperInput"
-                            accept="image/*,video/*"
-                          />
-                        </main>
-                        <main class="cover-upload">
+                        <section class="page-upload">
                           <div>
                             <i class="bx bx-upload"></i>
                             <h4>upload</h4>
                           </div>
-                        </main>
+                        </section>
+                        <section class="btn-reset" id="resetWallpaper">
+                          <div>
+                            <i class="bx bx-reset"></i>
+                          </div>
+                        </section>
+                        <section class="upload">
+                          <div>
+                            <input
+                              type="file"
+                              id="wallpaperInput"
+                              accept="image/*,video/*"
+                            />
+                          </div>
+                        </section>
+                        <section class="live-img">
+                          <main class="preview-img">
+                            <div></div>
+                          </main>
+                        </section>
                       </div>
                     </div>
                   </div>
@@ -263,40 +268,94 @@
                   <main class="history-progres">
                     <section class="wrapper-progres">
                       <div class="progres">
+                        <h4>MathiCalc 2.1</h4>
+                        <p>
+                          Perbaikan sistem penampilkan walpaper (type = Video)
+                        </p>
+                        <p>
+                          Mensinkronisasi antara
+                          <strong>Video Local</strong> dan
+                          <strong>Video YouTube</strong>
+                        </p>
+                      </div>
+                      <div class="progres">
                         <h4>MathiCalc 2.0</h4>
-                        <p>Penambahan sistem pasanng walpaper (type = video)</p>
+                        <p>Penambahan sistem pasanng walpaper (type = Video)</p>
+                        <p>
+                          Dapat menampilkan walpaper dalam bentuk
+                          <strong>Video Local</strong> atau
+                          <strong>Video YouTube</strong>
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.9</h4>
                         <p>Perbaikan UI agar lebih responsif</p>
+                        <p>
+                          Merapikan komponen-komponen dalam Container agar dapat
+                          lebih mudah melakukan responsif
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.8</h4>
                         <p>Penambahan sistem kalkulator (rumus matematika)</p>
+                        <p>Perhitungan rumus <strong>Luas Persegi</strong></p>
+                        <p>Perhitungan rumus <strong>Luas segituga</strong></p>
+                        <p>Perhitungan rumus <strong>Luas lingkaran</strong></p>
+                        <p>
+                          Perhitungan rumus <strong>keliling lingkaran</strong>
+                        </p>
+                        <p>Perhitungan rumus <strong>Volume Kubus</strong></p>
+                        <p>Perhitungan rumus <strong>Volume Balok</strong></p>
+                        <p>Perhitungan rumus <strong>Volume Tabung</strong></p>
+                        <p>Perhitungan rumus <strong>Pythagoras</strong></p>
+                        <p>Perhitungan rumus <strong>Faktorial</strong></p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.7</h4>
                         <p>Perbaikan UI khususnya pada Responsif mode mobile</p>
+                        <p>
+                          perubahan atau transformasi layar
+                          <strong>Dekstop</strong> ke <strong>Android</strong>
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.6</h4>
                         <p>
-                          Perubahan nama "<strong>Mathison Bot</strong> -
-                          <strong>MathiCalc Chat</strong>"
+                          Perubahan nama "<strong>Mathison Bot</strong> berubah
+                          menjadi <strong>MathiCalc Chat</strong>"
                         </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.5</h4>
-                        <p>Penambahan sistem chatBot pada Mathison Bot</p>
+                        <p>
+                          Penambahan UI chatBot pada
+                          <strong>Mathison Bot</strong>
+                        </p>
+                        <p>
+                          Perubahan <strong>mode kalkulator</strong> dengan
+                          <strong>mode chat</strong>
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.4</h4>
                         <p>Perbaikan sistem kalkulator yg lebih baik</p>
+                        <p>
+                          Perbaikan <strong>sistem kalkulator dasar</strong> (
+                          -, + )
+                        </p>
+                        <p>
+                          Perbaikan <strong>sistem kalkulator dasar</strong> (
+                          buka kurung dan tutup kurung )
+                        </p>
+                        <p>
+                          Perbaikan <strong>sistem kalkulator dasar</strong> (
+                          bilangan bulat, decimal, prima )
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>MathiCalc 1.3</h4>
                         <p>
-                          pembaruan pada desain UI <strong>MathiCalc</strong>
+                          Pembaruan pada desain UI <strong>MathiCalc</strong>
                         </p>
                         <p>Penambahan fitur <strong>Pilihan Tema</strong></p>
                         <p>Penambahan fitur <strong>font size</strong></p>
@@ -305,10 +364,16 @@
                       <div class="progres">
                         <h4>MathiCalc 1.2</h4>
                         <p>
-                          Perubahan nama "<strong>Mathison Calculator</strong> -
-                          <strong>MathiCalc</strong>"
+                          Perubahan nama "<strong>Mathison Calculator</strong>
+                          berubah menjadi <strong>MathiCalc</strong>"
                         </p>
                         <p>Menambahan UI baru dan sistem baru</p>
+                        <p>
+                          <strong
+                            >UI history, setting, konersi mata uang,
+                            about</strong
+                          >
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>Mathison Calculator 1.1</h4>
@@ -317,12 +382,20 @@
                           hanya bisa (penjumlahan, pengurangan, perkalian,
                           pembagian)
                         </p>
+                        <p>
+                          <strong>Perbaikan sistem kalkulator dasar</strong>,
+                          memperbaiki sistem operator aritmatika
+                        </p>
                       </div>
                       <div class="progres">
                         <h4>Mathison Calculator 1.0</h4>
                         <p>
                           <strong>Desain awal</strong> pembuatan kerangka
                           kalkulator dan belum include sistem kalkulator
+                        </p>
+                        <p>
+                          <strong>Perancangan desain</strong> menentukan desain
+                          kalkulator
                         </p>
                       </div>
                     </section>

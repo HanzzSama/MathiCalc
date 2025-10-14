@@ -381,10 +381,6 @@ body{
     font-size: 2.5em;
     /* background: red; */
 }
-.yt-wallpaper{
-    border: none;
-    border-radius: 11px
-}
 .wrapper-output{
     position: relative;
     z-index: 6;
@@ -398,12 +394,12 @@ body{
     display: flex;
     margin-top: 8px;
     word-break: break-all;
-  overflow-wrap: anywhere;
-  white-space: normal;
+    overflow-wrap: anywhere;
+    white-space: normal;
     justify-content: end;
 }
 .video-output{
-    z-index: -1;
+    z-index: 5;
     display: flex;
     align-items: center;
     height: 100%;
@@ -649,100 +645,97 @@ body{
     color: #b2b2b2;
 }
 .font-size-option.active { background: var(--accent-color); color: #000; font-weight: bold; }
-.upload-wrapper{
-    width: 100%;
-    margin-top: 15px;
-}
-.upload-wrapper>div{
+.main-input-wlpr{
+    margin-top: 1em;
     display: flex;
-    justify-content: center;
     position: relative;
 }
-.btn-reset{
-    z-index: 5;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-}
-.btn-reset .reset{
-    border: none;
-    background: #202020;
-    color: #9c9c9c;
-    cursor: pointer;
-    padding: 10px 10px;
-    border-radius: 6px;
-    font-size: 16px;
-}
-.preview-img{
-    /* display: none; */
-    display: flex;
+.main-input-wlpr>div{
     width: 100%;
-    height: 100%;
-    z-index: 2;
-    max-width: 15em;
-    position: absolute;
-}
-.preview-img>div{
     display: flex;
+}
+.page-upload{
     width: 100%;
-    /* background: red; */
-    justify-content: center;
+    display: none;
     align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #191919;
+    min-height: 10em;
 }
-.preview-img img{
-    /* width: 100%; */
-    margin: 10px 0;
-    max-height: 10em;
-    /* object-fit: contain; */
-    border-radius: 6px;
-}
-.preview-img>div{
-    margin: 10px 0;
+.page-upload.active {
     display: flex;
-    border-radius: 6px;
 }
-.preview-img video{
-    width: 100%;
-    height: 100%;
+.page-upload>div{
+    text-align: center;
+}
+.page-upload i{
+    font-size: 31px;
+    color: #696969;
+}
+.btn-reset{
+    bottom: 0;
+    right: 0;
+    z-index: 4;
+    padding: 9px;
+    background: #191919;
     border-radius: 6px;
+    position: absolute;
+}
+.btn-reset i{
+    font-size: 21px;
 }
 .upload{
-    height: 10em;
-    z-index: 4;
-    border-radius: 6px;
-    position: absolute;
-}
-input[type=file]::file-selector-button {
-    /* margin-right: 20px; */
-    border: none;
-    background: #202020;
     width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    border-radius: 8px;
+    /* background: blue; */
+    position: absolute;
+    overflow-x: hidden;
+}
+.upload>div{
+    width: 100%;
+    position: relative;
+    /* background: red; */
+}
+.upload input{
+    opacity: 0;
+}
+.upload input[type=file]::file-selector-button {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    border: none;
     height: 100%;
     border-radius: 6px;
     color: #fff;
     cursor: pointer;
-    opacity: 0;
 }
-.cover-upload{
+.live-img{
     width: 100%;
-    height: 10em;
+}
+.preview-img{
+    width: 100%;
+    /* background: red; */
+}
+.preview-img>div{
     display: flex;
-    z-index: 1;
-    border-radius: 6px;
-    background: #191919;
-    align-items: center;
+    width: 100%;
     justify-content: center;
-    border: 2px dashed #333;
 }
-.cover-upload div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+.preview-img img{
+    width: 100%;
+    border-radius: 8px;
 }
-.cover-upload i{
-    font-size: 2em;
-    color: #696969;
+.preview-img video{
+    width: 100%;
+    border-radius: 8px;
+}
+.preview-img iframe{
+    width: 100%;
+    border-radius: 8px;
 }
 .wrapper-newui{
     display: flex;
@@ -754,6 +747,10 @@ input[type=file]::file-selector-button {
 }
 .input-yt{
     margin-top: 1em;
+}
+.yt-wallpaper{
+    border: none;
+    border-radius: 8px;
 }
 .yt-floating {
     position: fixed !important;
@@ -795,7 +792,7 @@ input[type=file]::file-selector-button {
     transform: scale(1.1);
 }
 .container-about h6{
-    color: #b2b2b2;
+    color: #696969;
 }
 .about>div{
     border-radius: 10px;
@@ -1139,6 +1136,17 @@ input[type=file]::file-selector-button {
     .chat-text p{
         font-size: 13px;
     }
+    .yt-floating {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 180px !important;
+        border-radius: 6px !important;
+        z-index: 999 !important;
+        pointer-events: auto !important;
+        box-shadow: 0 0 10px #0008 !important;
+    }
 }
 @media screen and (max-width: 630px) {
     .desc-alert{
@@ -1160,17 +1168,6 @@ input[type=file]::file-selector-button {
     }
     .dev h6{
         font-size: 11px;
-    }
-    .yt-floating {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 180px !important;
-        border-radius: 6px !important;
-        z-index: 999 !important;
-        pointer-events: auto !important;
-        box-shadow: 0 0 10px #0008 !important;
     }
 }
 /* =================================== */
