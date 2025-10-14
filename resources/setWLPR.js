@@ -8,6 +8,7 @@ const videoFigure = document.querySelector(".video-output");
 
 // === IndexedDB setup ===
 let db;
+let currentBlobUrl = null;
 const DB_NAME = "WallpaperDB";
 const STORE_NAME = "wallpaperStore";
 
@@ -100,20 +101,18 @@ function updatePreview(url, type) {
   }
 }
 
-// === Fungsi utama pasang wallpaper ===
 function applyWallpaper(url, type) {
   // Reset semua media dulu
   videoOutput.pause();
   videoOutput.removeAttribute("src");
   videoOutput.load();
+  videoOutput.style.zIndex = "-1"; // Reset z-index
   videoFigure.style.background = "none";
   removeCover();
 
-  // Hapus elemen YouTube jika ada
   const oldYT = document.querySelector(".yt-wallpaper");
   if (oldYT) oldYT.remove();
 
-  // Hapus tombol Setting Video jika ada
   if (floatBtn) {
     floatBtn.remove();
     floatBtn = null;
@@ -129,12 +128,16 @@ function applyWallpaper(url, type) {
 
   if (type === "video") {
     mainOutput.style.backgroundImage = "none";
+
     videoOutput.src = url;
     videoOutput.autoplay = true;
     videoOutput.muted = true;
     videoOutput.loop = true;
     videoOutput.play().catch(() => {});
+
+    videoFigure.style.zIndex = "5"; // ⬅️ z-index aktif
     videoFigure.style.background = "#000";
+
     updatePreview(url, "video");
   } else if (type === "youtube") {
     const ytIframe = document.createElement("iframe");
@@ -144,11 +147,9 @@ function applyWallpaper(url, type) {
     ytIframe.className = "yt-wallpaper";
     ytIframe.style.cssText = `
       position: absolute;
-      top: 0; left: 0;
       width: 100%; height: 100%;
-      border: none;
-      z-index: 0;
       pointer-events: none;
+      z-index: 0;
     `;
     mainOutput.appendChild(ytIframe);
     updatePreview(url, "youtube");
@@ -168,7 +169,14 @@ wallpaperInput.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (file) {
     const blob = file;
+
+    if (currentBlobUrl) {
+      URL.revokeObjectURL(currentBlobUrl);
+    }
+
     const url = URL.createObjectURL(blob);
+    currentBlobUrl = url;
+
     const type = file.type.startsWith("video") ? "video" : "image";
 
     await clearDB();
@@ -177,9 +185,28 @@ wallpaperInput.addEventListener("change", async (e) => {
   }
 });
 
-// === Reset wallpaper ===
 resetBtn.addEventListener("click", async () => {
   await clearDB();
+
+  if (currentBlobUrl) {
+    URL.revokeObjectURL(currentBlobUrl);
+    currentBlobUrl = null;
+  }
+
+  videoOutput.pause();
+  videoOutput.removeAttribute("src");
+  videoOutput.load();
+  videoFigure.style.zIndex = "-1";
+
+  const yt = document.querySelector(".yt-wallpaper");
+  if (yt) yt.remove();
+
+  if (floatBtn) {
+    floatBtn.remove();
+    floatBtn = null;
+    isFloating = false;
+  }
+
   applyWallpaper(null);
 });
 
@@ -188,7 +215,11 @@ openDB().then(async () => {
   const saved = await getFromDB("wallpaper");
   if (saved) {
     if (saved.blob) {
+      if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+      }
       const blobUrl = URL.createObjectURL(saved.blob);
+      currentBlobUrl = blobUrl;
       applyWallpaper(blobUrl, saved.type);
     } else if (saved.type === "youtube" && saved.url) {
       applyWallpaper(saved.url, "youtube");
@@ -251,11 +282,11 @@ function toggleFloatingVideo() {
   if (!ytIframe) return;
 
   if (!isFloating) {
-    ytIframe.classList.add("yt-floating"); // tambahkan class ini
+    ytIframe.classList.add("yt-floating");
     isFloating = true;
     floatBtn.textContent = "🖥️ Jadikan Latar Belakang";
   } else {
-    ytIframe.classList.remove("yt-floating"); // hapus class saat kembali
+    ytIframe.classList.remove("yt-floating");
     isFloating = false;
     floatBtn.textContent = "📺 Setting Video";
   }
@@ -270,5 +301,3 @@ ytInput.addEventListener("change", (e) => {
     alert("Link YouTube tidak valid!");
   }
 });
-
-//
