@@ -39,24 +39,40 @@ document.addEventListener("DOMContentLoaded", () => {
       expr = expr
         .replace(/[x×]/g, "*")
         .replace(/[÷:]/g, "/")
-        .replace(/√/g, "Math.sqrt")
         .replace(/π/g, "Math.PI")
-        .replace(/sin\(/g, "Math.sin(")
-        .replace(/cos\(/g, "Math.cos(")
-        .replace(/tan\(/g, "Math.tan(")
-        .replace(/log\(/g, "Math.log10(")
-        .replace(/ln\(/g, "Math.log(")
         .replace(/%/g, "/100");
 
-      // Tangani kuadrat (²) di belakang angka atau tanda kurung
-      expr = expr.replace(/(\d+|\([^()]+\))²/g, "Math.pow($1,2)");
-      expr = expr.replace(/x²/g, "**2");
+      // ✅ Tangani akar kuadrat (√)
+      // Ubah "√9" → "Math.sqrt(9)"
+      expr = expr.replace(/√(\d+(\.\d+)?)/g, "Math.sqrt($1)");
+      // Ubah "√(9+16)" → "Math.sqrt(9+16)"
+      expr = expr.replace(/√\(([^()]+)\)/g, "Math.sqrt($1)");
 
+      // ✅ Tangani fungsi trigonometri tanpa/tanpa tanda kurung
+      expr = expr.replace(/sin\(/g, "Math.sin(");
+      expr = expr.replace(/cos\(/g, "Math.cos(");
+      expr = expr.replace(/tan\(/g, "Math.tan(");
+
+      // Ubah "sin30" → "Math.sin(30)"
+      expr = expr.replace(/sin(\d+(\.\d+)?)/g, "Math.sin($1)");
+      expr = expr.replace(/cos(\d+(\.\d+)?)/g, "Math.cos($1)");
+      expr = expr.replace(/tan(\d+(\.\d+)?)/g, "Math.tan($1)");
+
+      // ✅ Logaritma
+      expr = expr.replace(/log\(/g, "Math.log10(");
+      expr = expr.replace(/ln\(/g, "Math.log(");
+
+      // ✅ Kuadrat
+      expr = expr.replace(/(\d+|\([^()]+\))²/g, "Math.pow($1,2)");
+      expr = expr.replace(/x2/g, "**2");
+
+      // ✅ Evaluasi hasil
       let result = eval(expr);
       if (!isFinite(result)) throw "Math Error";
 
+      // ✅ Hasil dibulatkan 8 digit
       return parseFloat(result.toFixed(8));
-    } catch {
+    } catch (e) {
       return "Error";
     }
   }
