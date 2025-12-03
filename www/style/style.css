@@ -1175,7 +1175,7 @@ body{
     }
     .button:nth-child(18){
         grid-column: span 2;
-        background: var(--secondary-color);
+        background: var(--btn-color);
     }
     .hasil>div{
         width: 25px;
@@ -1228,10 +1228,11 @@ body{
         width: 100%;
     }
     .theme-color main{
-        max-height: 35px;
+        max-height: 65px;
     }
     .theme-color main div:nth-child(1){
-        max-height: 19px;
+        max-height: 23px;
+        border-radius: 0 0 170px 170px;
     }
     #uitxt{
         font-size: 12px;
