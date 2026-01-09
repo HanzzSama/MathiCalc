@@ -262,7 +262,7 @@ body{
     position: relative;
     overflow-x: hidden;
     border-radius: 10px;
-    background: var(--background-color);
+    background: var(--menu-color);
 }
 .main-newui.open{
     width: 100%;
@@ -296,7 +296,7 @@ body{
     color: #ccc;
 }
 .head-tittle strong{
-    color: var(--accent-color);
+    color: var(--btn-dark);
 }
 .chat-box{
     height: 100%;
@@ -316,18 +316,25 @@ body{
 .username h3{
     font-size: 16px;
     text-transform: capitalize;
-    color: var(--primary-color);
+    color: var(--btn-dark);
 }
 .chat.user .username h3{
     text-align: end;
-    color: var(--accent-color);
+    color: var(--btn-color);
+}
+.chat.user .chat-text{
+    display: flex;
+    max-width: 40em;
+    margin-top: 6px;
+    border-radius: 6px;
+    background: var(--btn-dark);
 }
 .chat-text{
     display: flex;
     max-width: 40em;
     margin-top: 6px;
     border-radius: 6px;
-    background: var(--secondary-color);
+    background: var(--menu-box);
 }
 .chat-text p{
     margin: 8px 15px;
