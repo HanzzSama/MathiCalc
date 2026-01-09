@@ -66,7 +66,7 @@ function handleAction(action) {
     try {
       display.value = eval(display.value);
     } catch {
-      display.value = "Error";
+      display.value = "tak terdefinisi";
     }
   }
 }
