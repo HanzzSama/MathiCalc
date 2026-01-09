@@ -429,6 +429,7 @@ body{
     position: relative;
     z-index: 6;
     display: flex;
+    justify-content: end;
     /* word-break: break-all; */
     /* overflow-wrap: anywhere; */
     /* white-space: normal; */
