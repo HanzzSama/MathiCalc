@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // ✅ Hasil dibulatkan 8 digit
       return parseFloat(result.toFixed(8));
     } catch (e) {
-      return "tak terdefinisi";
+      return "Tak Terdefinisi";
     }
   }
 
