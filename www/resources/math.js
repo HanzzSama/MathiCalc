@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (isIncompleteExpression(operation)) {
-      resultEl.textContent = "";
+      resultEl.textContent = "...";
       return;
     }
 
