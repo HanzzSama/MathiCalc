@@ -33,6 +33,30 @@ document.addEventListener("DOMContentLoaded", () => {
       maximumFractionDigits: 2,
     }).format(value);
 
+  const endsWithOperator = (expr) => /[+\-x:%÷:]$/.test(expr);
+
+  const isIncompleteExpression = (expr) => {
+    if (!expr) return true;
+
+    // Kurung tidak seimbang
+    const open = (expr.match(/\(/g) || []).length;
+    const close = (expr.match(/\)/g) || []).length;
+    if (open > close) return true;
+
+    // Diakhiri operator
+    if (endsWithOperator(expr)) {
+      // kecuali pola ":0" atau "/0"
+      if (/[:÷]0$/.test(expr)) return false;
+      return true;
+    }
+
+    // Akar / fungsi belum diisi
+    if (/√$/.test(expr)) return true;
+    if (/(sin|cos|tan|log|ln)$/.test(expr)) return true;
+
+    return false;
+  };
+
   // ===================== EVALUASI EKSPRESI =====================
   function evaluateExpression(expr) {
     try {
@@ -42,38 +66,38 @@ document.addEventListener("DOMContentLoaded", () => {
         .replace(/π/g, "Math.PI")
         .replace(/%/g, "/100");
 
-      // ✅ Tangani akar kuadrat (√)
-      // Ubah "√9" → "Math.sqrt(9)"
+      // 🔥 DETEKSI PEMBAGIAN NOL (REAL-TIME FRIENDLY)
+      // contoh: 4/0 , (8+2)/0 , 10/(5-5)
+      if (/\/\s*0(\D|$)/.test(expr)) {
+        return "Tak Terdefinisi";
+      }
+
       expr = expr.replace(/√(\d+(\.\d+)?)/g, "Math.sqrt($1)");
-      // Ubah "√(9+16)" → "Math.sqrt(9+16)"
       expr = expr.replace(/√\(([^()]+)\)/g, "Math.sqrt($1)");
 
-      // ✅ Tangani fungsi trigonometri tanpa/tanpa tanda kurung
       expr = expr.replace(/sin\(/g, "Math.sin(");
       expr = expr.replace(/cos\(/g, "Math.cos(");
       expr = expr.replace(/tan\(/g, "Math.tan(");
 
-      // Ubah "sin30" → "Math.sin(30)"
       expr = expr.replace(/sin(\d+(\.\d+)?)/g, "Math.sin($1)");
       expr = expr.replace(/cos(\d+(\.\d+)?)/g, "Math.cos($1)");
       expr = expr.replace(/tan(\d+(\.\d+)?)/g, "Math.tan($1)");
 
-      // ✅ Logaritma
       expr = expr.replace(/log\(/g, "Math.log10(");
       expr = expr.replace(/ln\(/g, "Math.log(");
 
-      // ✅ Kuadrat
       expr = expr.replace(/(\d+|\([^()]+\))²/g, "Math.pow($1,2)");
       expr = expr.replace(/x2/g, "**2");
 
-      // ✅ Evaluasi hasil
-      let result = eval(expr);
-      if (!isFinite(result)) throw "Math Error";
+      const result = eval(expr);
 
-      // ✅ Hasil dibulatkan 8 digit
+      if (result === Infinity || result === -Infinity || isNaN(result)) {
+        return "Tak Terdefinisi";
+      }
+
       return parseFloat(result.toFixed(8));
-    } catch (e) {
-      return "Tak Terdefinisi";
+    } catch {
+      return "Error";
     }
   }
 
@@ -83,15 +107,26 @@ document.addEventListener("DOMContentLoaded", () => {
       resultEl.textContent = "0";
       return;
     }
-    try {
-      const preview = evaluateExpression(operation);
-      resultEl.textContent = isCurrencyMode
-        ? convertCurrency(preview)
-        : preview;
-      lastValidResult = preview;
-    } catch {
-      resultEl.textContent = lastValidResult;
+
+    if (isIncompleteExpression(operation)) {
+      resultEl.textContent = "";
+      return;
     }
+
+    const preview = evaluateExpression(operation);
+
+    if (preview === "Tak Terdefinisi") {
+      resultEl.textContent = "Tak Terdefinisi";
+      return;
+    }
+
+    if (preview === "Error") {
+      resultEl.textContent = "Error";
+      return;
+    }
+
+    resultEl.textContent = preview;
+    lastValidResult = preview;
   }
 
   // ===================== RENDER HISTORY =====================
@@ -151,7 +186,13 @@ document.addEventListener("DOMContentLoaded", () => {
       operation = "";
       operationEl.textContent = "0";
       resultEl.textContent = "0";
+
       isFinal = false;
+      lastResult = null;
+      lastValidResult = "0";
+
+      resultEl.classList.remove("final");
+      operationEl.classList.remove("hidden");
       return;
     }
 
