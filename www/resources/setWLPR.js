@@ -97,6 +97,7 @@ function updatePreview(url, type) {
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
+    video.style.display = "flex";
     video.style.width = "100%";
     video.style.borderRadius = "10px";
     wrapper.appendChild(video);
@@ -108,6 +109,7 @@ function updatePreview(url, type) {
     iframe.style.width = "100%";
     iframe.style.aspectRatio = "16 / 9";
     iframe.style.borderRadius = "10px";
+    video.style.display = "none";
     wrapper.appendChild(iframe);
   } else {
     const img = document.createElement("img");
@@ -115,6 +117,7 @@ function updatePreview(url, type) {
     img.alt = "Wallpaper Preview";
     img.style.width = "100%";
     img.style.borderRadius = "10px";
+    video.style.display = "none";
     wrapper.appendChild(img);
   }
 
@@ -123,12 +126,15 @@ function updatePreview(url, type) {
 
 // === Terapkan Wallpaper ===
 function applyWallpaper(url, type) {
-  // Reset media
+  // === RESET SEMUA MEDIA ===
   videoOutput.pause();
   videoOutput.removeAttribute("src");
   videoOutput.load();
-  videoOutput.style.zIndex = "-1";
+
+  videoFigure.style.display = "none";   // ⬅️ PENTING
+  videoFigure.style.zIndex = "-1";
   videoFigure.style.background = "none";
+
   removeCover();
 
   const oldYT = document.querySelector(".yt-wallpaper");
@@ -140,6 +146,7 @@ function applyWallpaper(url, type) {
     isFloating = false;
   }
 
+  // === JIKA RESET / NULL ===
   if (!url) {
     mainOutput.style.backgroundImage = "none";
     mainOutput.style.background = "var(--dark-mode-item)";
@@ -147,18 +154,26 @@ function applyWallpaper(url, type) {
     return;
   }
 
-  // === Jenis Wallpaper ===
+  // === VIDEO WALLPAPER ===
   if (type === "video") {
     mainOutput.style.backgroundImage = "none";
-    videoOutput.src = url;
-    videoOutput.autoplay = true;
-    videoOutput.muted = true;
-    videoOutput.loop = true;
-    videoOutput.play().catch(() => {});
+
+    videoFigure.style.display = "flex"; // ✅ TAMPIL
     videoFigure.style.zIndex = "5";
     videoFigure.style.background = "#000";
+
+    videoOutput.src = url;
+    videoOutput.muted = true;
+    videoOutput.loop = true;
+    videoOutput.autoplay = true;
+    videoOutput.play().catch(() => {});
+
     updatePreview(url, "video");
-  } else if (type === "youtube") {
+    return;
+  }
+
+  // === YOUTUBE WALLPAPER ===
+  if (type === "youtube") {
     const ytIframe = document.createElement("iframe");
     ytIframe.src = url;
     ytIframe.allow =
@@ -171,18 +186,23 @@ function applyWallpaper(url, type) {
       z-index: 0;
     `;
     mainOutput.appendChild(ytIframe);
+
     updatePreview(url, "youtube");
     showFloatButton();
-  } else {
-    mainOutput.style.backgroundImage = `url(${url})`;
-    mainOutput.style.backgroundPosition = "center";
-    mainOutput.style.backgroundSize = "cover";
-    mainOutput.style.backgroundRepeat = "no-repeat";
-    mainOutput.style.backgroundColor = "transparent";
-    addCover();
-    updatePreview(url, "image");
+    return;
   }
+
+  // === IMAGE WALLPAPER ===
+  mainOutput.style.backgroundImage = `url(${url})`;
+  mainOutput.style.backgroundPosition = "center";
+  mainOutput.style.backgroundSize = "cover";
+  mainOutput.style.backgroundRepeat = "no-repeat";
+  mainOutput.style.backgroundColor = "transparent";
+
+  addCover();
+  updatePreview(url, "image");
 }
+
 
 // === Upload File Lokal (Gambar/Video) ===
 wallpaperInput.addEventListener("change", async (e) => {

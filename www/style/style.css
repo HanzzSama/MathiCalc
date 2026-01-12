@@ -404,7 +404,7 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     /* background-image: url('../img/Mienar.gif'); */
-    background: var(--menu-box);
+    /* background: var(--menu-box); */
     border-radius: 10px;
     border: 1px solid var(--btn-dark);
 }
@@ -426,9 +426,9 @@ body{
     /* background: red; */
 }
 .wrapper-output{
-    position: relative;
-    z-index: 6;
+    z-index: 10;
     display: flex;
+    position: relative;
     justify-content: end;
     /* word-break: break-all; */
     /* overflow-wrap: anywhere; */
@@ -444,8 +444,9 @@ body{
     justify-content: end;
 }
 .video-output{
-    z-index: -1;
-    display: flex;
+    display: none;
+    z-index: -10;
+    /* display: flex; */
     align-items: center;
     height: 100%;
     width: 100%;
@@ -454,7 +455,7 @@ body{
     background: var(--menu-box);
 }
 .video-output video{
-    z-index: -1;
+    z-index: -10;
     width: 100%;
     height: 100%;
     border-radius: 11px;
