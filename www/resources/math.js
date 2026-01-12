@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.chatbotActive = false;
 
   // ===================== HELPER FUNCTION =====================
-  const isOperator = (ch) => ["+", "-", "x", ":", "%"].includes(ch);
+  const isOperator = (ch) => ["+", "-", "x", ":", "^"].includes(ch);
 
   const formatCurrency = (value, code) =>
     new Intl.NumberFormat("en-US", {
@@ -57,6 +57,142 @@ document.addEventListener("DOMContentLoaded", () => {
     return false;
   };
 
+  const supers = {
+    0: "⁰",
+    1: "¹",
+    2: "²",
+    3: "³",
+    4: "⁴",
+    5: "⁵",
+    6: "⁶",
+    7: "⁷",
+    8: "⁸",
+    9: "⁹",
+  };
+
+  function toSuper(n) {
+    return n
+      .toString()
+      .split("")
+      .map((d) => supers[d] || d)
+      .join("");
+  }
+
+  function renderSuperscript(expr) {
+    return expr.replace(
+      /(\d+|\([^()]+\))\^(\d+)/g,
+      (_, base, power) => `${base}${toSuper(power)}`
+    );
+  }
+
+  function getLastToken(expr) {
+    const match = expr.match(
+      /(sin|cos|tan|log|ln|√|\^|\(|\)|[+\-x:%]|\d+\.?\d*)$/
+    );
+    return match ? match[0] : "";
+  }
+
+  function isFunction(token) {
+    return ["sin", "cos", "tan", "log", "ln", "√"].includes(token);
+  }
+
+  const FUNCTIONS = ["sin", "cos", "tan", "log", "ln"];
+  const OPERATORS = ["+", "-", "x", ":", "^"];
+  const POSTFIX = ["%"];
+
+  function isNumber(t) {
+    return /^\d+(\.\d+)?$/.test(t);
+  }
+
+  function tokenize(expr) {
+    return expr.match(/(sin|cos|tan|log|ln|√|\d+\.\d+|\d+|[()+\-x:%^])/g) || [];
+  }
+
+  function sanitizeExpression(expr) {
+    const tokens = tokenize(expr);
+    const clean = [];
+
+    let openParen = 0;
+    let expectOperand = true;
+
+    for (const t of tokens) {
+      // 🔢 ANGKA
+      if (isNumber(t)) {
+        if (!expectOperand) clean.push("x");
+        clean.push(t);
+        expectOperand = false;
+        continue;
+      }
+
+      // √ (PREFIX)
+      if (t === "√") {
+        if (expectOperand) {
+          clean.push("√");
+          expectOperand = true;
+        }
+        continue;
+      }
+
+      // FUNGSI
+      if (FUNCTIONS.includes(t)) {
+        if (expectOperand) {
+          clean.push(t, "(");
+          openParen++;
+          expectOperand = true;
+        }
+        continue;
+      }
+
+      // (
+      if (t === "(") {
+        if (expectOperand) {
+          clean.push("(");
+          openParen++;
+        }
+        continue;
+      }
+
+      // )
+      if (t === ")") {
+        if (!expectOperand && openParen > 0) {
+          clean.push(")");
+          openParen--;
+          expectOperand = false;
+        }
+        continue;
+      }
+
+      // % (POSTFIX ONLY)
+      if (t === "%") {
+        if (!expectOperand && clean.at(-1)?.match(/\d|\)/)) {
+          clean.push("%");
+          expectOperand = false;
+        }
+        continue;
+      }
+
+      // OPERATOR INFIX
+      if (OPERATORS.includes(t)) {
+        if (!expectOperand) {
+          clean.push(t);
+          expectOperand = true;
+        }
+        continue;
+      }
+    }
+
+    // Tutup kurung sisa
+    while (openParen-- > 0) clean.push(")");
+    if (!clean.length) return "0";
+
+    const result = clean
+      .join("")
+      .replace(/([+\-x:^])$/, "")
+      .replace(/√$/, "");
+
+    return result || "0";
+  }
+
   // ===================== EVALUASI EKSPRESI =====================
   function evaluateExpression(expr) {
     try {
@@ -88,6 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       expr = expr.replace(/(\d+|\([^()]+\))²/g, "Math.pow($1,2)");
       expr = expr.replace(/x2/g, "**2");
+      expr = expr.replace(
+        /(\([^()]+\)|\d+(\.\d+)?)[\s]*\^[\s]*(\([^()]+\)|\d+(\.\d+)?)/g,
+        "Math.pow($1,$3)"
+      );
 
       const result = eval(expr);
 
@@ -108,20 +248,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (isIncompleteExpression(operation)) {
+    const safeExpr = sanitizeExpression(operation);
+
+    if (isIncompleteExpression(safeExpr)) {
       resultEl.textContent = "...";
       return;
     }
 
-    const preview = evaluateExpression(operation);
+    const preview = evaluateExpression(safeExpr);
 
-    if (preview === "Tak Terdefinisi") {
-      resultEl.textContent = "Tak Terdefinisi";
-      return;
-    }
-
-    if (preview === "Error") {
-      resultEl.textContent = "Error";
+    if (preview === "Tak Terdefinisi" || preview === "Error") {
+      resultEl.textContent = preview;
       return;
     }
 
@@ -154,11 +291,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       text.textContent = `${item.operation} = ${item.result}`;
       text.addEventListener("click", () => {
-        operation = item.operation;
-        operationEl.textContent = operation;
+        operation = sanitizeExpression(item.operation);
+        operationEl.innerHTML = renderSuperscript(operation);
         resultEl.textContent = item.result;
         resultEl.classList.add("final");
         operationEl.classList.add("hidden");
+        updatePreview();
         isFinal = true;
       });
 
@@ -199,35 +337,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // Delete
     if (action === "delete") {
       operation = operation.slice(0, -1);
-      operationEl.textContent = operation || "0";
+      operationEl.innerHTML = renderSuperscript(operation || "0");
       updatePreview();
       return;
     }
 
     // Hitung (=)
     if (action === "calculate") {
-      try {
-        const finalResult = evaluateExpression(operation);
-        lastResult = finalResult;
-        isFinal = true;
+      const safeExpr = sanitizeExpression(operation);
+      const finalResult = evaluateExpression(safeExpr);
 
-        operationEl.classList.add("hidden");
-        resultEl.classList.add("final");
+      lastResult = finalResult;
+      isFinal = true;
 
-        resultEl.textContent = isCurrencyMode
-          ? convertCurrency(finalResult)
-          : finalResult;
+      operationEl.classList.add("hidden");
+      resultEl.classList.add("final");
 
-        history.unshift({
-          operation,
-          result: isCurrencyMode ? convertCurrency(finalResult) : finalResult,
-        });
+      resultEl.textContent = finalResult;
 
-        if (history.length > 10) history.pop();
-        renderHistory();
-      } catch {
-        resultEl.textContent = lastValidResult;
-      }
+      history.unshift({
+        operation: safeExpr,
+        result: finalResult,
+      });
+
+      if (history.length > 10) history.pop();
+      renderHistory();
       return;
     }
 
@@ -245,22 +379,62 @@ document.addEventListener("DOMContentLoaded", () => {
         isFinal = false;
         resultEl.classList.remove("final");
         operationEl.classList.remove("hidden");
-        operationEl.textContent = operation;
+        operationEl.innerHTML = renderSuperscript(operation);
         updatePreview();
         return;
       }
 
+      if (value === "^") {
+        const lastToken = getLastToken(operation);
+        if (!lastToken || isOperator(lastToken) || lastToken === "(") return;
+      }
+
       // Tangani input kompleks
-      if (isOperator(value) && isOperator(lastChar)) {
-        operation = operation.slice(0, -1) + value;
-      } else if (["sin", "cos", "tan"].includes(value)) {
-        operation += /\d$/.test(operation) ? `*${value}` : value;
+      if (isOperator(value)) {
+        const lastToken = getLastToken(operation);
+        if (isOperator(lastToken)) {
+          operation = operation.slice(0, -lastToken.length) + value;
+        } else {
+          operation += value;
+        }
+      } else if (["sin", "cos", "tan", "log", "ln", "√"].includes(value)) {
+        const lastToken = getLastToken(operation);
+        if (isFunction(lastToken)) return;
+        if (/\d|\)$/.test(lastToken)) {
+          operation += "*" + value;
+        } else {
+          operation += value;
+        }
       } else if (value === "()") {
+        const lastToken = getLastToken(operation);
         const open = (operation.match(/\(/g) || []).length;
         const close = (operation.match(/\)/g) || []).length;
-        operation += open > close ? ")" : "(";
+
+        const canOpen =
+          !operation || // awal
+          isOperator(lastToken) || // setelah operator
+          isFunction(lastToken); // setelah fungsi
+
+        const canClose =
+          open > close && // masih ada yg dibuka
+          !isOperator(lastToken) && // bukan setelah operator
+          lastToken !== "(" && // bukan setelah (
+          lastToken !== "√"; // bukan setelah √
+
+        if (canOpen) {
+          operation += "(";
+        } else if (canClose) {
+          operation += ")";
+        }
       } else if (value === "√") {
-        operation += /\d$/.test(operation) ? "*√" : "√";
+        const lastToken = getLastToken(operation);
+        if (lastToken === "√") return;
+
+        if (/\d|\)$/.test(lastToken)) {
+          operation += "*√";
+        } else {
+          operation += "√";
+        }
       } else if (value === "x2") {
         if (!/x2$/.test(operation)) operation += "x2";
       } else {
@@ -269,10 +443,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Bersihkan operator ganda
-      operation = operation.replace(/([+\-x:%]){2,}/g, (m) => m.slice(-1));
+      operation = operation.replace(/([+\-x:^]){2,}/g, (m) => m.slice(-1));
       operation = operation.replace(/\(\-([0-9.]+)(?!\))/g, "(-$1)");
 
-      operationEl.textContent = operation;
+      operationEl.innerHTML = renderSuperscript(operation);
       updatePreview();
     }
   }
@@ -323,6 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ",": { value: ".", action: null },
       "(": { value: "(", action: null },
       ")": { value: ")", action: null },
+      "^": { value: "^", action: null },
       Enter: { value: null, action: "calculate" },
       Backspace: { value: null, action: "delete" },
       Delete: { value: null, action: "clear" },

@@ -1,219 +1,205 @@
 document.addEventListener("DOMContentLoaded", () => {
   const chatBox = document.querySelector(".chat-box > div");
   const inputField = document.querySelector(".input-chat input");
-  const livePreview = document.getElementById("live-preview");
 
-  // === Fungsi Live Kalkulator Preview ===
-  function liveCalc(msg) {
-    msg = msg.toLowerCase().trim();
-    let result = "";
+  // ===============================
+  // VARIABEL ALIAS
+  // ===============================
+  const VAR_ALIAS = {
+    p: ["p", "panjang"],
+    l: ["l", "lebar"],
+    t: ["t", "tinggi"],
+    a: ["a", "alas"],
+    r: ["r", "jari", "jari-jari", "radius"],
+  };
 
-    try {
-      if (/^[0-9+\-*/().\s]+$/.test(msg)) {
-        const evalRes = Function("return " + msg)();
-        if (!isNaN(evalRes)) result = `Hasil = ${evalRes}`;
-      }
-    } catch (e) {}
+  // ===============================
+  // STATE / INGATAN BOT
+  // ===============================
+  let pendingQuestion = null;
 
-    if (msg.includes("luas persegi")) {
-      const s = parseFloat(msg.match(/\d+/));
-      if (!isNaN(s)) result = `Luas persegi = ${s * s}`;
-    } else if (msg.includes("luas lingkaran")) {
-      const r = parseFloat(msg.match(/\d+/));
-      if (!isNaN(r))
-        result = `Luas lingkaran ≈ ${(Math.PI * r * r).toFixed(2)}`;
-    } else if (msg.includes("volume kubus")) {
-      const s = parseFloat(msg.match(/\d+/));
-      if (!isNaN(s)) result = `Volume kubus = ${s ** 3}`;
-    } else if (msg.includes("faktorial")) {
-      const n = parseInt(msg.match(/\d+/));
-      if (!isNaN(n)) {
-        let f = 1;
-        for (let i = 2; i <= n; i++) f *= i;
-        result = `Faktorial(${n}) = ${f}`;
-      }
-    }
-
-    return result;
+  // ===============================
+  // FORMAT TEXT
+  // ===============================
+  function formatText(text) {
+    return text.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
   }
 
-  // === Tambah Pesan ke Chat ===
+  // ===============================
+  // JANGAN DIUBAH
+  // ===============================
   function addMessage(sender, text) {
-    const section = document.createElement("section");
-    section.className = `chat ${sender}`;
-    section.innerHTML = `
-      <main class="wrapper-chat">
-        <div class="username"><h3>${sender}</h3></div>
-        <div class="chat-text"><p>${text}</p></div>
-        <div></div>
-      </main>
-    `;
-    chatBox.appendChild(section);
-
-    // Scroll ke bawah dengan efek halus
-    section.scrollIntoView({ behavior: "smooth" });
+    const el = document.createElement("section");
+    el.className = `chat ${sender}`;
+    el.innerHTML = `<main class="wrapper-chat">
+      <div class="username"><h3>${sender}</h3></div>
+      <div class="chat-text"><p>${text}</p></div>
+    </main>`;
+    chatBox.appendChild(el);
+    el.scrollIntoView({ behavior: "smooth" });
   }
 
-  // === Hapus Semua Chat ===
-  function clearChat() {
-    chatBox.innerHTML = "";
-    addMessage("bot", "💡 Semua chat sudah dihapus.");
+  // ===============================
+  // AMBIL NILAI VARIABEL
+  // ===============================
+  function getVar(msg, key) {
+    const aliases = VAR_ALIAS[key];
+    for (const name of aliases) {
+      const regex = new RegExp(
+        `${name}\\s*(?:=|:)?\\s*(\\d+(?:\\.\\d+)?)`,
+        "i"
+      );
+      const match = msg.match(regex);
+      if (match) return parseFloat(match[1]);
+    }
+    return null;
   }
 
-  // === Balasan Bot ===
+  // ===============================
+  // FORMAT PENJELASAN
+  // ===============================
+  function explain({ title, formula, known, steps, result }) {
+    return `
+**${title}**
+
+Rumus:
+${formula}
+
+Diketahui:
+${known}
+
+Penyelesaian:
+${steps}
+
+Hasil:
+${result}
+`.trim();
+  }
+
+  // ===============================
+  // BOT LOGIC
+  // ===============================
   function botReply(userMsg) {
-    const msg = userMsg.toLowerCase().trim();
+    const msg = userMsg.toLowerCase();
     let reply = "";
 
-    // Command clear
-    if (["cls", "clear", "del", "delete", "remove"].includes(msg)) {
-      clearChat();
+    // ==================================
+    // LANJUTAN DARI PERTANYAAN SEBELUMNYA
+    // ==================================
+    if (pendingQuestion === "luas_segitiga") {
+      const a = getVar(msg, "a");
+      const t = getVar(msg, "t");
+
+      if (a !== null && t !== null) {
+        pendingQuestion = null;
+        const hasil = (a * t) / 2;
+        reply = explain({
+          title: "Luas Segitiga",
+          formula: "L = ½ × a × t",
+          known: `a = ${a}\nt = ${t}`,
+          steps: `L = ½ × ${a} × ${t}\nL = ${hasil}`,
+          result: `Luas = ${hasil}`,
+        });
+      } else {
+        reply = "Masukkan **alas** dan **tinggi**.\nContoh: **alas=10 tinggi=6**";
+      }
+
+      addMessage("bot", formatText(reply));
       return;
     }
 
-    // Command umum
-    if (msg.includes("halo") || msg.includes("hai")) {
-      reply = "Halo juga! 👋 Aku bot MathiCalc, siap bantu hitung 😊";
-    } else if (msg.includes("about")) {
+    // ===============================
+    // LUAS SEGITIGA
+    // ===============================
+    if (msg.includes("luas") && msg.includes("segitiga")) {
+      const a = getVar(msg, "a");
+      const t = getVar(msg, "t");
+
+      if (a === null || t === null) {
+        pendingQuestion = "luas_segitiga";
+        reply = "Masukkan **alas** dan **tinggi**.\nContoh: **alas=10 tinggi=6**";
+      } else {
+        const hasil = (a * t) / 2;
+        reply = explain({
+          title: "Luas Segitiga",
+          formula: "L = ½ × a × t",
+          known: `a = ${a}\nt = ${t}`,
+          steps: `L = ½ × ${a} × ${t}\nL = ${hasil}`,
+          result: `Luas = ${hasil}`,
+        });
+      }
+    }
+
+    // ===============================
+    // LUAS PERSEGI PANJANG
+    // ===============================
+    else if (msg.includes("luas") && msg.includes("persegi panjang")) {
+      const p = getVar(msg, "p");
+      const l = getVar(msg, "l");
+
+      if (p && l) {
+        reply = explain({
+          title: "Luas Persegi Panjang",
+          formula: "L = p × l",
+          known: `p = ${p}\nl = ${l}`,
+          steps: `L = ${p} × ${l}\nL = ${p * l}`,
+          result: `Luas = ${p * l}`,
+        });
+      } else {
+        reply = "Masukkan **panjang** dan **lebar**.\nContoh: **p=5 l=3**";
+      }
+    }
+
+    // ===============================
+    // LUAS LINGKARAN
+    // ===============================
+    else if (msg.includes("luas") && msg.includes("lingkaran")) {
+      const r = getVar(msg, "r");
+
+      if (r) {
+        const hasil = (Math.PI * r * r).toFixed(2);
+        reply = explain({
+          title: "Luas Lingkaran",
+          formula: "L = π × r²",
+          known: `r = ${r}`,
+          steps: `L = π × ${r}²\nL ≈ ${hasil}`,
+          result: `Luas ≈ ${hasil}`,
+        });
+      } else {
+        reply = "Masukkan **jari-jari**.\nContoh: **r=7**";
+      }
+    }
+
+    // ===============================
+    // DEFAULT
+    // ===============================
+    else {
       reply =
-        "MathiCalc adalah kalkulator + chatbot untuk bantu hitung rumus matematika dan konversi.";
-    } else if (msg.includes("help")) {
-      reply = `
-      Contoh pertanyaan:
-      - luas persegi sisi 5
-      - hitung luas lingkaran jari 7
-      - volume kubus sisi 3
-      - pythagoras 3 4
-      - faktorial 5
-      - konversi 30 c ke f
-      - ubah 10 kg ke pound
-      - 1000 m ke km
-      `;
+        "Aku bisa menghitung:\n- luas segitiga\n- luas persegi panjang\n- luas lingkaran\n\nGunakan **alas / a**, **tinggi / t**, **panjang / p**, **lebar / l**, **r** 😉";
     }
 
-    // Rumus Matematika
-    else if (msg.includes("luas persegi")) {
-      const s = parseFloat(msg.match(/\d+/));
-      reply = `Luas persegi = ${MathRumus.luasPersegi(s)}`;
-    } else if (msg.includes("luas persegi panjang")) {
-      const nums = msg.match(/\d+/g).map(Number);
-      reply = `Luas persegi panjang = ${MathRumus.luasPP(nums[0], nums[1])}`;
-    } else if (msg.includes("luas segitiga")) {
-      const nums = msg.match(/\d+/g).map(Number);
-      reply = `Luas segitiga = ${MathRumus.luasSegitiga(nums[0], nums[1])}`;
-    } else if (msg.includes("luas lingkaran")) {
-      const r = parseFloat(msg.match(/\d+/));
-      reply = `Luas lingkaran = ${MathRumus.luasLingkaran(r).toFixed(2)}`;
-    } else if (msg.includes("keliling lingkaran")) {
-      const r = parseFloat(msg.match(/\d+/));
-      reply = `Keliling lingkaran = ${MathRumus.kelilingLingkaran(r).toFixed(
-        2
-      )}`;
-    } else if (msg.includes("volume kubus")) {
-      const s = parseFloat(msg.match(/\d+/));
-      reply = `Volume kubus = ${MathRumus.volumeKubus(s)}`;
-    } else if (msg.includes("volume balok")) {
-      const nums = msg.match(/\d+/g).map(Number);
-      reply = `Volume balok = ${MathRumus.volumeBalok(
-        nums[0],
-        nums[1],
-        nums[2]
-      )}`;
-    } else if (msg.includes("volume tabung")) {
-      const nums = msg.match(/\d+/g).map(Number);
-      reply = `Volume tabung = ${MathRumus.volumeTabung(
-        nums[0],
-        nums[1]
-      ).toFixed(2)}`;
-    } else if (msg.includes("pythagoras")) {
-      const nums = msg.match(/\d+/g).map(Number);
-      reply = `Sisi miring = ${MathRumus.pythagoras(nums[0], nums[1]).toFixed(
-        2
-      )}`;
-    } else if (msg.includes("faktorial")) {
-      const n = parseFloat(msg.match(/\d+/));
-      reply = `Hasil faktorial = ${MathRumus.faktorial(n)}`;
-    }
-
-    // Konversi Suhu
-    else if (msg.includes("c ke f")) {
-      const c = parseFloat(msg.match(/\d+/));
-      reply = `${c}°C = ${MathRumus.cToF(c).toFixed(2)}°F`;
-    } else if (msg.includes("f ke c")) {
-      const f = parseFloat(msg.match(/\d+/));
-      reply = `${f}°F = ${MathRumus.fToC(f).toFixed(2)}°C`;
-    } else if (msg.includes("c ke k")) {
-      const c = parseFloat(msg.match(/\d+/));
-      reply = `${c}°C = ${MathRumus.cToK(c).toFixed(2)}K`;
-    } else if (msg.includes("k ke c")) {
-      const k = parseFloat(msg.match(/\d+/));
-      reply = `${k}K = ${MathRumus.kToC(k).toFixed(2)}°C`;
-    }
-
-    // Konversi Berat
-    else if (msg.includes("kg ke gram")) {
-      const kg = parseFloat(msg.match(/\d+/));
-      reply = `${kg} kg = ${MathRumus.kgToGram(kg)} gram`;
-    } else if (msg.includes("gram ke kg")) {
-      const g = parseFloat(msg.match(/\d+/));
-      reply = `${g} gram = ${MathRumus.gramToKg(g)} kg`;
-    } else if (msg.includes("kg ke pound")) {
-      const kg = parseFloat(msg.match(/\d+/));
-      reply = `${kg} kg = ${MathRumus.kgToPound(kg).toFixed(2)} lb`;
-    } else if (msg.includes("pound ke kg")) {
-      const lb = parseFloat(msg.match(/\d+/));
-      reply = `${lb} lb = ${MathRumus.poundToKg(lb).toFixed(2)} kg`;
-    }
-
-    // Konversi Panjang
-    else if (msg.includes("m ke cm")) {
-      const m = parseFloat(msg.match(/\d+/));
-      reply = `${m} m = ${MathRumus.mToCm(m)} cm`;
-    } else if (msg.includes("cm ke m")) {
-      const cm = parseFloat(msg.match(/\d+/));
-      reply = `${cm} cm = ${MathRumus.cmToM(cm)} m`;
-    } else if (msg.includes("m ke km")) {
-      const m = parseFloat(msg.match(/\d+/));
-      reply = `${m} m = ${MathRumus.mToKm(m)} km`;
-    } else if (msg.includes("km ke m")) {
-      const km = parseFloat(msg.match(/\d+/));
-      reply = `${km} km = ${MathRumus.kmToM(km)} m`;
-    } else {
-      reply = "Aku tidak paham, coba ketik 'help' 😊";
-    }
-
-    addMessage("bot", reply);
+    addMessage("bot", formatText(reply));
   }
 
-  // === Event Tekan Enter ===
+  // ===============================
+  // ENTER SUBMIT
+  // ===============================
   inputField.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && inputField.value.trim() !== "") {
-      const userMsg = inputField.value.trim();
-      addMessage("user", userMsg);
+    if (e.key === "Enter" && inputField.value.trim()) {
+      const msg = inputField.value;
+      addMessage("user", formatText(msg));
       inputField.value = "";
-      livePreview.style.display = "none";
-      livePreview.style.height = "0";
-      setTimeout(() => botReply(userMsg), 500);
+      botReply(msg);
     }
   });
 
-  // === Event Saat User Mengetik (Live Preview) ===
-  inputField.addEventListener("input", () => {
-    const msg = inputField.value;
-    const preview = liveCalc(msg);
-    if (preview) {
-      livePreview.style.display = "flex";
-      livePreview.style.height = "100%";
-      livePreview.textContent = preview;
-    } else {
-      livePreview.style.height = "0";
-      livePreview.style.display = "none";
-    }
-  });
-
-  // === Pesan Awal ===
+  // ===============================
+  // PESAN AWAL
+  // ===============================
   addMessage(
     "bot",
-    "Halo! Ada yang bisa saya bantu? (ketik 'help' untuk daftar perintah)"
+    formatText(
+      "Halo 👋 Aku **MathiCalc Bot**\n\nCoba:\n- luas segitiga\n- luas segitiga alas=10 tinggi=6\n- luas persegi panjang p=5 l=3\n- luas lingkaran r=7"
+    )
   );
 });

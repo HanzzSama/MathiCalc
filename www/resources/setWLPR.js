@@ -109,7 +109,6 @@ function updatePreview(url, type) {
     iframe.style.width = "100%";
     iframe.style.aspectRatio = "16 / 9";
     iframe.style.borderRadius = "10px";
-    video.style.display = "none";
     wrapper.appendChild(iframe);
   } else {
     const img = document.createElement("img");
@@ -117,7 +116,6 @@ function updatePreview(url, type) {
     img.alt = "Wallpaper Preview";
     img.style.width = "100%";
     img.style.borderRadius = "10px";
-    video.style.display = "none";
     wrapper.appendChild(img);
   }
 
@@ -355,16 +353,30 @@ function toggleFloatingVideo() {
 }
 
 // === Input Link YouTube ===
+// === Input Link YouTube ===
 if (ytInput) {
-  ytInput.addEventListener("change", (e) => {
-    const url = e.target.value.trim();
+  const applyYT = () => {
+    const url = ytInput.value.trim();
+    if (!url) return;
+
     const embed = getYouTubeEmbedLink(url);
     if (embed) {
       applyYouTubeWallpaper(embed);
     } else {
       alert("Link YouTube tidak valid!");
     }
+  };
+
+  // Saat tekan Enter
+  ytInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      applyYT();
+    }
   });
+
+  // Saat input kehilangan fokus
+  ytInput.addEventListener("change", applyYT);
 }
 
 // Fungsi untuk sembunyikan upload panel
